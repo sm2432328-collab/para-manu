@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Una aventura para Manu 💘</title>
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#4a3b2a;--paper:#fbf2d9;--red:#c0463f;--teal:#5f9c8f;--tan:#e6c27a}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Patrick Hand","Comic Sans MS",cursive;color:var(--ink);font-size:1.2rem;overflow-x:hidden;
+background:#efe3c2 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.8' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .3 0 0 0 0 .2 0 0 0 .13 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.screen{display:none;min-height:100%;flex-direction:column;align-items:center;justify-content:center;padding:16px;text-align:center}
+.screen.on{display:flex}
+h1{font-size:clamp(2.4rem,8vw,4.4rem);margin:0;line-height:1;color:var(--red);transform:rotate(-2deg);text-shadow:3px 3px 0 var(--tan)}
+h2{margin:0 0 8px;font-size:clamp(1.5rem,5vw,2.2rem);color:var(--red);font-weight:400}
+p{margin:8px 0}
+.row{display:flex;gap:22px;flex-wrap:wrap;justify-content:center;margin-top:16px}
+button{font:inherit;font-size:1.3rem;cursor:pointer;color:var(--ink);background:var(--tan);border:3px solid var(--ink);border-radius:12px 8px 14px 8px;padding:10px 22px;box-shadow:3px 5px 0 var(--ink)}
+button:active{transform:translate(2px,3px);box-shadow:1px 2px 0 var(--ink)}
+button:focus-visible{outline:3px dashed var(--red);outline-offset:3px}
+#menu .row button{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--paper);min-width:150px}
+#menu .row button img{height:150px}
+#menu .row button:hover{transform:rotate(-2deg)}
+#sea{position:relative;width:min(92vw,760px);aspect-ratio:16/10;border:4px solid var(--ink);border-radius:8px 14px 8px 14px;background:radial-gradient(ellipse at 30% 20%,#a9d6c6,transparent 60%),radial-gradient(ellipse at 80% 80%,#4b8a80,transparent 60%),#6fb0a0;overflow:hidden}
+#sea svg{position:absolute;inset:0;width:100%;height:100%}
+.isl{position:absolute;transform:translate(-50%,-50%);width:clamp(70px,16vw,120px)}
+.isl b{position:absolute;right:0;top:0;background:var(--red);color:#fff;border-radius:50%;width:1.5rem;height:1.5rem;font-weight:400;line-height:1.5rem}
+#ship{position:absolute;transform:translate(-50%,-62%);width:clamp(70px,15vw,115px);animation:bob 1.3s ease-in-out infinite alternate}
+#ship .h{position:absolute;left:30%;top:-34%;width:38%}
+#ship .s{width:100%;display:block}
+@keyframes bob{to{margin-top:-7px;rotate:3deg}}
+#cv{width:min(94vw,720px);aspect-ratio:8/5;border:4px solid var(--ink);border-radius:8px 14px 8px 14px;touch-action:none}
+#l3{position:fixed;inset:0;overflow:hidden;z-index:2;--w:clamp(90px,16vw,150px)}
+#l3.luffy{background:linear-gradient(#bfe3cf,#f3ead2)}
+#l3.ace{background:#2b2233}
+#fx{position:absolute;inset:0;pointer-events:none}
+#stage{position:absolute;inset:0}
+#who{position:absolute;left:6%;bottom:42%;width:var(--w);transform-origin:left center}
+#who img{width:100%;display:block}
+#arm{position:absolute;left:calc(6% + var(--w)*.8);bottom:calc(42% + var(--w)*.56);height:20px;width:0;background:#f3c9a0;border:3px solid var(--ink);border-radius:12px}
+#arm img{position:absolute;right:-30px;top:-14px;width:44px}
+#hold{position:absolute;left:50%;bottom:9%;transform:translateX(-50%);z-index:3;touch-action:none;user-select:none}
+#bar{position:absolute;left:50%;bottom:4%;transform:translateX(-50%);width:min(80vw,420px);height:18px;border:3px solid var(--ink);border-radius:10px;background:var(--paper);overflow:hidden;z-index:3}
+#bar i{display:block;height:100%;width:0;background:var(--red)}
+.ace.end #stage,.ace.end #hold,.ace.end #bar,.ace.end #fx{animation:melt 2s ease-in forwards}
+@keyframes melt{to{transform:translateY(70vh) scaleY(3);filter:blur(14px);opacity:0}}
+.luffy.end #who{animation:bigs 2s ease-in forwards}
+.luffy.end #arm{display:none}
+@keyframes bigs{to{transform:scaleX(70)}}
+#intro{position:fixed;inset:0;z-index:8;display:none;flex-direction:column;align-items:center;justify-content:center;background:repeating-conic-gradient(#f3ead2 0 4deg,#e0cf9f 4deg 8deg)}
+#intro.on{display:flex}
+#intro b{font-size:clamp(3rem,14vw,8rem);font-weight:400;color:var(--red);text-shadow:4px 4px 0 var(--ink);animation:slam .5s cubic-bezier(.2,1.6,.4,1) both}
+#intro span{font-size:clamp(1.4rem,5vw,2.4rem);background:var(--ink);color:var(--paper);padding:4px 18px;transform:rotate(-2deg);animation:slam .5s .25s both}
+@keyframes slam{from{transform:translateX(-120vw) rotate(-8deg) scale(1.4)}}
+#msg{position:fixed;inset:0;background:rgba(40,30,20,.55);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
+#msg.on{display:flex}
+#msg>div,#letter article{background:var(--paper);border:4px solid var(--ink);border-radius:6px;padding:26px 22px;max-width:560px;box-shadow:7px 8px 0 var(--ink);transform:rotate(-1deg)}
+#msg p,#letter p{font-size:1.5rem;line-height:1.4}
+@media (prefers-reduced-motion:reduce){#ship,#intro b,#intro span{animation:none}}
+</style>
+</head>
+<body>
+
+<section id="menu" class="screen on">
+  <h1>Una aventura<br>para Manu 💘</h1>
+  <p>Elige a tu pirata</p>
+  <div class="row">
+    <button onclick="pick('luffy')"><span id="bL"></span>Luffy</button>
+    <button onclick="pick('ace')"><span id="bA"></span>Ace</button>
+  </div>
+</section>
+
+<section id="map" class="screen">
+  <h2>Rumbo a la Grand Line</h2>
+  <div id="sea">
+    <svg viewBox="0 0 100 100" preserveAspectRatio="none"><polyline points="6,82 22,62 50,28 80,58" fill="none" stroke="#fbf2d9" stroke-width=".8" stroke-dasharray="2 2" vector-effect="non-scaling-stroke"/></svg>
+    <div id="ship"></div>
+  </div>
+  <p id="mapText"></p>
+</section>
+
+<section id="game" class="screen">
+  <h2 id="gTitle"></h2>
+  <canvas id="cv" width="640" height="400"></canvas>
+  <p id="gHelp"></p>
+</section>
+
+<section id="l3" class="screen">
+  <canvas id="fx"></canvas>
+  <div id="stage"><div id="who"></div><div id="arm"></div></div>
+  <button id="hold"></button>
+  <div id="bar"><i></i></div>
+</section>
+
+<section id="letter" class="screen">
+  <article>
+    <h2>Para Manu 💘</h2>
+    <p>Manu, me gustas mucho. Quiero hacer las cosas bien contigo. Eres un niño precioso y muy inteligente, sé que vales la pena y sé que tú sabes que yo también te amo mucho, en serio.</p>
+    <p>Niño, eres la primera persona por la que he sentido algo así y espero que la única. Te quiero y espero que te haya gustado esto sjsjsj 💘</p>
+    <button onclick="location.reload()">Jugar otra vez</button>
+  </article>
+</section>
+
+<div id="intro"><b id="iT"></b><span id="iS"></span></div>
+<div id="msg"><div><p id="msgT"></p><button id="msgB"></button></div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---- dibujos: acuarela con trazo de lápiz ---- */
+const S=(w,h,b)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><filter id="w" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence baseFrequency=".05" numOctaves="2" seed="3" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="3"/></filter><g filter="url(#w)" stroke="#4a3b2a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">${b}</g></svg>`;
+const FR=(c,s)=>S(50,56,`<circle cx="25" cy="32" r="20" fill="${c}"/><path d="M25 32a4 4 0 1 1 4 4a8 8 0 1 1-8-8a12 12 0 1 1 12 12" fill="none" stroke="${s}"/><path d="M25 12q2-8 8-9q-1 7-8 9" fill="#6aa84f"/>`);
+const ARMS='<path d="M30 62l-12 28 8 4 10-22M70 62l12 28-8 4-10-22" fill="#f3c9a0"/>';
+const SV={
+luffy:S(100,120,`<path d="M30 62h40l4 34H26z" fill="#c0463f"/>${ARMS}<path d="M27 96h46v16H27z" fill="#3d5a9e"/><path d="M36 112v6M64 112v6"/><circle cx="50" cy="44" r="17" fill="#f3c9a0"/><circle cx="44" cy="43" r="2" fill="#4a3b2a"/><circle cx="56" cy="43" r="2" fill="#4a3b2a"/><path d="M41 49q9 10 18 0z" fill="#fff"/><path d="M23 30q27-6 54 0q-27 12-54 0z" fill="#e6c27a"/><path d="M29 29q-2-22 21-22t21 22q-21 6-42 0z" fill="#e6c27a"/><path d="M29 25q21 8 42 0l1 6q-22 8-44 0z" fill="#c0463f"/>`),
+ace:S(100,120,`<path d="M30 62h40l4 34H26z" fill="#f3c9a0"/>${ARMS}<path d="M27 96h46v16H27z" fill="#3b3b4f"/><path d="M27 96h46" stroke="#c0463f" stroke-width="5"/><path d="M38 62q12 14 24 0" fill="none" stroke="#c0463f" stroke-width="4" stroke-dasharray="1 5"/><circle cx="50" cy="44" r="17" fill="#f3c9a0"/><path d="M33 42q17-16 34 0l-2-12H35z" fill="#2b2233"/><circle cx="44" cy="46" r="2" fill="#4a3b2a"/><circle cx="56" cy="46" r="2" fill="#4a3b2a"/><path d="M43 52q7 5 14 0" fill="none"/><path d="M26 28q24-8 48 0q-24 10-48 0z" fill="#f08a24"/><path d="M32 27q-1-20 18-20t18 20q-18 5-36 0z" fill="#f08a24"/>`),
+teach:S(140,120,`<path d="M20 120q0-50 50-52t50 52z" fill="#2b2233"/><path d="M32 50q-12 40 38 46t38-46q-14 20-38 18t-38-18z" fill="#1a1420"/><circle cx="70" cy="46" r="26" fill="#c99a76"/><path d="M42 38q28-34 56 0q-28-8-56 0z" fill="#1a1420"/><path d="M52 40l14 6M88 40l-14 6" fill="none"/><circle cx="59" cy="50" r="3" fill="#fff"/><circle cx="81" cy="50" r="3" fill="#fff"/><path d="M48 66q22 18 44 0q-22-6-44 0z" fill="#fff"/><rect x="65" y="68" width="8" height="9" fill="#1a1420" stroke="none"/>`),
+f0:FR('#9b59b6','#5b2a7a'),f1:FR('#f08a24','#8a4a10'),f2:FR('#4fb286','#1f6b4a'),
+kairo:S(44,44,`<path d="M22 3l16 14-5 24H11L6 17z" fill="#7aa7b8"/><path d="M12 18q5-4 10 0t10 0M12 28q5-4 10 0t10 0" fill="none" stroke-width="2"/>`),
+orb:S(36,36,`<circle cx="18" cy="18" r="14" fill="#1c0f2b"/><path d="M18 18a3 3 0 1 1 3 3a6 6 0 1 1-6-6a9 9 0 1 1 9 9" fill="none" stroke="#a569bd" stroke-width="2"/>`),
+fl:S(30,40,`<path d="M15 2q14 16 12 28q-2 9-12 9T3 30q0-8 7-12q0 8 5 8q-4-12 0-24z" fill="#f08a24"/><path d="M15 20q7 8 4 14q-2 4-4 4t-4-4q-1-6 4-14z" fill="#f7d44a" stroke="none"/>`),
+fist:S(34,34,`<circle cx="17" cy="17" r="14" fill="#f3c9a0"/><path d="M9 10v8M15 8v10M21 8v10M27 10v8" stroke-width="1.5"/>`),
+ship:S(120,100,`<path d="M8 66h104q-10 24-40 24T8 66z" fill="#a8743a"/><path d="M58 8h5v60h-5z" fill="#a8743a"/><path d="M63 12q36 8 36 40q-18 8-36 4z" fill="#fff6dc"/><circle cx="80" cy="36" r="8" fill="#fff"/><path d="M68 29q12-9 24 0q-12 4-24 0z" fill="#e6c27a"/>`),
+i0:S(110,90,`<path d="M5 80q50-60 100 0z" fill="#7fb77e"/><path d="M55 52V26" stroke-width="3"/><path d="M55 26q-18-6-24 6M55 26q18-6 24 6M55 26q-8-14-18-12M55 26q8-14 18-12" fill="none"/><circle cx="46" cy="42" r="5" fill="#9b59b6"/>`),
+i1:S(110,90,`<path d="M8 82l22-50 18 18 20-40 24 50 10 22z" fill="#5b4a6b"/><circle cx="62" cy="50" r="7" fill="#fff"/>`),
+i2:S(110,90,`<path d="M5 82q50-44 100 0z" fill="#e8a0a8"/><path d="M55 56q-22-14-22-28q0-12 11-12q8 0 11 8q3-8 11-8q11 0 11 12q0 14-22 28z" fill="#e0457b"/>`)
+};
+const U=s=>'data:image/svg+xml;utf8,'+encodeURIComponent(s);
+const IM={};for(const k in SV){IM[k]=new Image();IM[k].src=U(SV[k])}
+const img=(k,st='')=>`<img src="${U(SV[k])}" style="${st}" alt="">`;
+$('bL').innerHTML=img('luffy','height:150px');$('bA').innerHTML=img('ace','height:150px');
+
+/* ---- base del juego ---- */
+let hero=null,cur=null,last=0,px=320,keys={},P=[];
+const W=640,H=400,cv=$('cv'),c=cv.getContext('2d');
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+function say(t,fn,label){$('msgT').textContent=t;$('msgB').textContent=label||'Seguir navegando ⛵';$('msg').classList.add('on');$('msgB').onclick=()=>{$('msg').classList.remove('on');fn()}}
+function intro(t,s,fn){$('iT').textContent=t;$('iS').textContent=s;$('intro').classList.add('on');setTimeout(()=>{$('intro').classList.remove('on');fn()},1700)}
+function loop(t){const dt=Math.min(.05,(t-last)/1000||0);last=t;if(cur)cur(dt);requestAnimationFrame(loop)}
+requestAnimationFrame(loop);
+const mv=e=>{const r=cv.getBoundingClientRect();px=(e.clientX-r.left)/r.width*W};
+cv.addEventListener('pointermove',mv);cv.addEventListener('pointerdown',mv);
+addEventListener('keydown',e=>{keys[e.key]=1;if(e.key===' ')e.preventDefault()});
+addEventListener('keyup',e=>keys[e.key]=0);
+function steer(dt){if(keys.ArrowLeft||keys.a)px-=330*dt;if(keys.ArrowRight||keys.d)px+=330*dt;px=Math.max(30,Math.min(W-30,px))}
+function spr(k,x,y,w,sx=1,sy=1){const i=IM[k],h=w*i.height/i.width||0;c.save();c.translate(x,y);c.scale(sx,sy);if(h)c.drawImage(i,-w/2,-h/2,w,h);c.restore()}
+function pop(t,x,y){P.push({t,x,y,l:1})}
+function pops(dt){P=P.filter(p=>{p.l-=dt*1.3;p.y-=40*dt;c.save();c.globalAlpha=Math.max(0,p.l);c.font='bold 30px "Patrick Hand",cursive';c.textAlign='center';c.lineWidth=6;c.strokeStyle='#fbf2d9';c.strokeText(p.t,p.x,p.y);c.fillStyle='#c0463f';c.fillText(p.t,p.x,p.y);c.restore();return p.l>0})}
+function wash(a,b,t){const g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,a);g.addColorStop(1,b);c.fillStyle=g;c.fillRect(0,0,W,H);
+ c.fillStyle='rgba(255,255,255,.35)';for(let i=0;i<4;i++){c.beginPath();c.ellipse((i*190+t*12)%(W+200)-100,60+i*28,70,16,0,0,7);c.fill()}
+ c.strokeStyle='rgba(255,255,255,.45)';c.lineWidth=3;for(let r=0;r<3;r++){c.beginPath();for(let x=0;x<=W;x+=20)c.lineTo(x,H-18+r*8+Math.sin(x/30+t*2+r)*4);c.stroke()}}
+function hud(t){c.font='bold 22px "Patrick Hand",cursive';c.textAlign='left';c.textBaseline='middle';c.lineWidth=5;c.strokeStyle='#fbf2d9';c.strokeText(t,12,22);c.fillStyle='#4a3b2a';c.fillText(t,12,22)}
+
+/* ---- menú y mapa ---- */
+function pick(h){hero=h;goMap(0)}
+const ISL=[[22,62],[50,28],[80,58]];
+const TXT=['Isla 1: ¡las Frutas del Diablo!','Isla 2: te espera Marshall D. Teach','Isla 3: el último tesoro 💘'];
+const place=(el,p)=>{el.style.left=p[0]+'%';el.style.top=p[1]+'%'};
+function goMap(n){
+  cur=null;show('map');
+  document.querySelectorAll('.isl').forEach(e=>e.remove());
+  ISL.forEach((p,i)=>{const d=document.createElement('div');d.className='isl';d.innerHTML=img('i'+i,'width:100%')+'<b>'+(i+1)+'</b>';place(d,p);$('sea').appendChild(d)});
+  const s=$('ship');s.innerHTML=img(hero,'width:100%').replace('<img','<img class="h"')+img('ship','width:100%').replace('<img','<img class="s"');
+  s.style.transition='none';place(s,n===0?[6,82]:ISL[n-1]);
+  $('mapText').textContent=TXT[n];
+  setTimeout(()=>{s.style.transition='left 2s ease-in-out,top 2s ease-in-out';place(s,ISL[n])},150);
+  setTimeout(()=>[()=>intro('Nivel 1','Frutas del Diablo',L1),()=>intro('Nivel 2','Marshall D. Teach',L2),()=>intro('Nivel 3','El último tesoro',L3)][n](),2400);
+}
+function openGame(t,h){show('game');$('gTitle').textContent=t;$('gHelp').textContent=h;P=[]}
+
+/* ---- nivel 1: frutas del diablo ---- */
+function L1(){
+  openGame('Nivel 1 · Frutas del Diablo','Mueve el dedo, el mouse o las flechas. Atrapa 10 frutas y esquiva el Kairoseki: ¡te quita poder!');
+  let items=[],sc=0,sp=0,t=0,sq=0;
+  cur=dt=>{
+    steer(dt);t+=dt;sp-=dt;sq=Math.max(0,sq-dt*4);
+    if(sp<=0){sp=.7;items.push({x:30+Math.random()*(W-60),y:-20,bad:Math.random()<.25,k:'f'+Math.floor(Math.random()*3),v:130+Math.random()*90,r:0})}
+    items.forEach(i=>{i.y+=i.v*dt;i.r+=dt*2});
+    items=items.filter(i=>{
+      if(i.y>H-95&&i.y<H-15&&Math.abs(i.x-px)<42){sq=1;if(i.bad){sc=Math.max(0,sc-2);pop('¡Ay!',i.x,H-110)}else{sc++;pop('¡Ñam!',i.x,H-110)}return false}
+      return i.y<H+20});
+    wash('#bfe3cf','#5f9c8f',t);
+    items.forEach(i=>{c.save();c.translate(i.x,i.y);c.rotate(Math.sin(i.r)*.3);spr(i.bad?'kairo':i.k,0,0,i.bad?40:44);c.restore()});
+    spr(hero,px,H-55+Math.sin(t*7)*2,72,1+sq*.18,1-sq*.18);
+    pops(dt);hud('Frutas del Diablo: '+sc+' / 10');
+    if(sc>=10){cur=null;say('Manu te quiero mucho, me encantas 💘',()=>goMap(1))}
+  };
+}
+
+/* ---- nivel 2: Marshall D. Teach ---- */
+function L2(){
+  openGame('Nivel 2 · Marshall D. Teach','Muévete para esquivar sus orbes de oscuridad. Tu ataque sale solo: ¡apunta bien!');
+  let hp=15,lives=3,shots=[],orbs=[],t=0,fire=0,drop=1,inv=0,bx=W/2,n=0;
+  cur=dt=>{
+    steer(dt);t+=dt;inv-=dt;bx=W/2+Math.sin(t*1.3)*230;
+    fire-=dt;if(fire<=0){fire=.35;shots.push({x:px,y:H-70});if(n++%8===0)pop(hero==='ace'?'¡Hiken!':'¡Gomu Gomu no Pistol!',Math.max(130,Math.min(W-130,px)),H-120)}
+    drop-=dt;if(drop<=0){drop=.8;orbs.push({x:bx,y:120,vx:(Math.random()-.5)*120,vy:170})}
+    shots.forEach(s=>s.y-=420*dt);orbs.forEach(o=>{o.y+=o.vy*dt;o.x+=o.vx*dt});
+    shots=shots.filter(s=>{if(s.y<125&&Math.abs(s.x-bx)<55){hp--;pop('¡POW!',bx,150);return false}return s.y>0});
+    orbs=orbs.filter(o=>{if(inv<=0&&Math.abs(o.x-px)<30&&Math.abs(o.y-(H-45))<35){lives--;inv=1;pop('¡Ay!',px,H-110);return false}return o.y<H+20});
+    wash('#7a6a9c','#2b2233',t);
+    spr('teach',bx,75+Math.sin(t*3)*4,150);
+    shots.forEach(s=>spr(hero==='ace'?'fl':'fist',s.x,s.y,30));
+    orbs.forEach(o=>spr('orb',o.x,o.y,28));
+    c.globalAlpha=inv>0&&Math.floor(t*12)%2?.3:1;spr(hero,px,H-55+Math.sin(t*7)*2,72);c.globalAlpha=1;
+    c.fillStyle='#2b2233';c.fillRect(W/2-150,H-14,300,10);c.fillStyle='#c0463f';c.fillRect(W/2-150,H-14,300*Math.max(0,hp)/15,10);
+    pops(dt);hud('Vidas: '+'♥ '.repeat(Math.max(0,lives)));
+    if(hp<=0){cur=null;say('Manu, gracias por todo, realmente eres un chico increíble en todos los aspectos, te amo 💘',()=>goMap(2))}
+    else if(lives<=0){cur=null;say('Teach te derrotó… ¡pero los piratas no se rinden!',L2,'Intentar otra vez')}
+  };
+}
+
+/* ---- nivel 3: fuego o estiramiento ---- */
+function L3(){
+  show('l3');
+  const ace=hero==='ace',l3=$('l3'),fx=$('fx'),f=fx.getContext('2d');
+  l3.className='screen on '+hero;
+  fx.width=innerWidth;fx.height=innerHeight;
+  $('who').innerHTML=img(hero);
+  $('arm').innerHTML=img('fist');$('arm').style.display=ace?'none':'block';$('arm').style.width='0';
+  const hb=$('hold');hb.textContent=ace?'🔥 Mantén presionado para arder':'Mantén presionado para estirarte';
+  let held=false,ch=0,done=false,ps=[];
+  hb.onpointerdown=()=>held=true;hb.onpointerup=hb.onpointerleave=hb.onpointercancel=()=>held=false;
+  cur=dt=>{
+    if(done)return;
+    ch=Math.max(0,Math.min(1,ch+((held||keys[' '])?dt*.22:-dt*.06)));
+    $('bar').firstElementChild.style.width=ch*100+'%';
+    if(ace){
+      const p=ch*100;
+      l3.style.background='linear-gradient(to top,#f08a24 '+p+'%,#2b2233 '+(p+25)+'%)';
+      for(let i=0;i<ch*14;i++)ps.push({x:Math.random()*fx.width,y:fx.height+10,vy:-(2+Math.random()*4+ch*5),l:1});
+      f.clearRect(0,0,fx.width,fx.height);f.globalCompositeOperation='lighter';
+      ps=ps.filter(q=>{q.y+=q.vy;q.l-=.012;if(q.l<=0)return false;
+        f.fillStyle='rgba(255,'+Math.floor(90+q.l*100)+',20,'+q.l*.55+')';
+        f.beginPath();f.arc(q.x,q.y,4+14*q.l,0,7);f.fill();return true});
+    }else $('arm').style.width=ch*88+'vw';
+    if(ch>=1){done=true;l3.classList.add('end');setTimeout(()=>{cur=null;l3.className='screen';show('letter')},2300)}
+  };
+}
+</script>
+</body>
+</html>
